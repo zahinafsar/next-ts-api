@@ -1,0 +1,153 @@
+# Contributing
+
+We welcome contributions to Next-TS-API! This guide will help you get started with contributing to the project.
+
+## Development Setup
+
+1. Fork and clone the repository:
+   ```bash
+   git clone https://github.com/your-username/next-ts-api.git
+   cd next-ts-api
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+3. Build the project:
+   ```bash
+   pnpm build
+   ```
+
+4. Run tests:
+   ```bash
+   pnpm test
+   ```
+
+## Project Structure
+
+```
+next-ts-api/
+├── src/
+│   ├── client/       # API client implementation
+│   ├── config/       # Next.js plugin configuration
+│   ├── types/        # Core type definitions
+│   └── utils/        # Utility functions
+├── tests/            # Test suite
+├── examples/         # Example implementations
+└── docs/            # Documentation
+```
+
+## Development Workflow
+
+1. Create a new branch for your feature/fix:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. Make your changes and ensure:
+   - All tests pass
+   - Code is properly formatted
+   - Documentation is updated
+   - Types are properly defined
+
+3. Commit your changes:
+   ```bash
+   git commit -m "feat: add your feature description"
+   ```
+
+   We follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages:
+   - `feat:` for new features
+   - `fix:` for bug fixes
+   - `docs:` for documentation changes
+   - `chore:` for maintenance tasks
+   - `test:` for adding or modifying tests
+   - `refactor:` for code refactoring
+
+4. Push your changes and create a Pull Request
+
+## Testing
+
+We use Jest for testing. Run the test suite:
+
+```bash
+pnpm test          # Run all tests
+pnpm test:watch    # Run tests in watch mode
+pnpm test:coverage # Run tests with coverage report
+```
+
+When adding new features, please include:
+- Unit tests for new functionality
+- Integration tests for API interactions
+- Type tests to ensure type safety
+
+## Documentation
+
+When making changes, please update:
+- TypeScript types and JSDoc comments
+- README.md for significant changes
+- Documentation pages in `/docs`
+- Example code if relevant
+
+## Type Safety
+
+Next-TS-API prioritizes type safety. When contributing:
+
+1. Use strict TypeScript settings
+2. Avoid using `any` or `@ts-ignore`
+3. Write proper type definitions
+4. Test type inference and validation
+
+## Code Style
+
+We use ESLint and Prettier for code formatting:
+
+```bash
+pnpm lint        # Run linter
+pnpm format      # Format code
+```
+
+Follow these guidelines:
+- Use meaningful variable and function names
+- Write clear comments for complex logic
+- Keep functions focused and concise
+- Use TypeScript features appropriately
+
+## Pull Request Guidelines
+
+When submitting a PR:
+
+1. **Title**: Use conventional commits format
+2. **Description**: Include:
+   - Purpose of the change
+   - Summary of the implementation
+   - Any breaking changes
+   - Screenshots for UI changes
+3. **Changes**:
+   - Keep changes focused and atomic
+   - Include tests
+   - Update documentation
+4. **Review**:
+   - Respond to review comments
+   - Make requested changes
+   - Keep the PR updated with the main branch
+
+## Getting Help
+
+Need help? You can:
+- Open an issue for questions
+- Join our discussions on GitHub
+- Check existing issues and PRs
+
+## Code of Conduct
+
+We follow a standard code of conduct:
+- Be respectful and inclusive
+- Focus on constructive feedback
+- Help others learn and grow
+- Maintain a positive environment
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License. 

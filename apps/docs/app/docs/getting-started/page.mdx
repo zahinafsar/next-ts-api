@@ -1,0 +1,96 @@
+# Getting Started
+
+This guide will help you set up Next-TS-API in your Next.js project.
+
+## Installation
+
+Install Next-TS-API using your preferred package manager:
+
+```bash
+npm install next-ts-api
+# or
+yarn add next-ts-api
+# or
+pnpm add next-ts-api
+```
+
+## Setup
+
+1. Add the plugin to your `next.config.js`:
+
+```javascript
+const { nextTsApi } = require('next-ts-api/config');
+
+const nextConfig = {
+  // ... your other config
+};
+
+const plugins = [
+  // ... other plugins
+  nextTsApi(),
+];
+
+module.exports = composePlugins(...plugins)(nextConfig);
+```
+
+2. The plugin will automatically generate types for your API routes in a `types/next-ts-api.ts` file.
+
+## Basic Usage
+
+### 1. Create an API Route
+
+Create a new API route in your Next.js app:
+
+```typescript
+// app/api/hello/route.ts
+import { NextApiRequest } from 'next-ts-api';
+
+export async function GET() {
+  return Response.json({ message: 'Hello World!' });
+}
+
+export async function POST(request: NextApiRequest<{ name: string }>) {
+  const body = await request.json();
+  return Response.json({ message: `Hello ${body.name}!` });
+}
+```
+
+### 2. Initialize the API Client
+
+Create an API client instance:
+
+```typescript
+// lib/api.ts
+import { createNextFetchApi } from "next-ts-api";
+import { type ApiRoutes } from "../types/next-ts-api";
+
+export const api = createNextFetchApi<ApiRoutes>();
+```
+
+### 3. Make API Calls
+
+Use the typed API client in your components:
+
+```typescript
+// app/page.tsx
+import { api } from '../lib/api';
+
+export default async function Page() {
+  // GET request
+  const { message } = await api('hello', { method: 'GET' });
+  
+  // POST request with typed body
+  const response = await api('hello', {
+    method: 'POST',
+    body: { name: 'John' }
+  });
+  
+  return <div>{response.message}</div>;
+}
+```
+
+## Next Steps
+
+- Learn about [Core Concepts](/docs/core-concepts)
+- Explore [Examples](/docs/examples)
+- Check out the [API Reference](/docs/api-reference) 

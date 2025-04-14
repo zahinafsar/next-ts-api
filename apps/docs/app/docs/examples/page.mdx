@@ -1,0 +1,236 @@
+# Examples
+
+This page provides practical examples of using Next-TS-API in common scenarios.
+
+## Basic CRUD Operations
+
+### Todo List API
+
+A complete example of a Todo List API with type-safe endpoints:
+
+```typescript
+// app/api/todos/route.ts
+import { NextApiRequest } from 'next-ts-api';
+
+interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+// GET /api/todos
+export async function GET(
+  request: Request,
+  { searchParams }: { searchParams: { completed?: string } }
+) {
+  // Filter todos by completion status if provided
+  return Response.json({ todos: [] });
+}
+
+// POST /api/todos
+export async function POST(
+  request: NextApiRequest<{
+    title: string;
+  }>
+) {
+  const { title } = await request.json();
+  const newTodo: Todo = {
+    id: Math.random().toString(),
+    title,
+    completed: false
+  };
+  return Response.json(newTodo);
+}
+```
+
+```typescript
+// app/api/todos/[id]/route.ts
+import { NextApiRequest } from 'next-ts-api';
+
+// GET /api/todos/[id]
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  return Response.json({ 
+    id: params.id,
+    title: 'Sample Todo',
+    completed: false
+  });
+}
+
+// PUT /api/todos/[id]
+export async function PUT(
+  request: NextApiRequest<{
+    title?: string;
+    completed?: boolean;
+  }>,
+  { params }: { params: { id: string } }
+) {
+  const updates = await request.json();
+  return Response.json({ 
+    id: params.id,
+    ...updates
+  });
+}
+
+// DELETE /api/todos/[id]
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  return Response.json({ success: true });
+}
+```
+
+### Using the API Client
+
+```typescript
+// lib/api.ts
+import { createNextFetchApi } from "next-ts-api";
+import { type ApiRoutes } from "../types/next-ts-api";
+
+export const api = createNextFetchApi<ApiRoutes>();
+```
+
+```typescript
+// app/todos/page.tsx
+import { api } from '@/lib/api';
+
+export default async function TodosPage() {
+  // Get all todos
+  const { todos } = await api('todos', { 
+    method: 'GET',
+    query: { completed: 'false' }
+  });
+
+  // Create a new todo
+  const newTodo = await api('todos', {
+    method: 'POST',
+    body: { title: 'Learn Next-TS-API' }
+  });
+
+  // Update a todo
+  const updatedTodo = await api('todos/123', {
+    method: 'PUT',
+    body: { completed: true }
+  });
+
+  // Delete a todo
+  await api('todos/123', { method: 'DELETE' });
+
+  return <div>/* Your JSX here */</div>;
+}
+```
+
+## Authentication Example
+
+Example of an authentication API with type-safe request/response:
+
+```typescript
+// app/api/auth/login/route.ts
+import { NextApiRequest } from 'next-ts-api';
+
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
+}
+
+export async function POST(
+  request: NextApiRequest<LoginRequest>
+) {
+  const { email, password } = await request.json();
+  
+  // Your authentication logic here
+  
+  return Response.json<LoginResponse>({
+    token: 'your-jwt-token',
+    user: {
+      id: '123',
+      email,
+      name: 'John Doe'
+    }
+  });
+}
+```
+
+```typescript
+// app/login/page.tsx
+import { api } from '@/lib/api';
+
+async function handleLogin(email: string, password: string) {
+  try {
+    const response = await api('auth/login', {
+      method: 'POST',
+      body: { email, password }
+    });
+    
+    // Types are inferred!
+    const { token, user } = response;
+    
+    // Store token, update UI, etc.
+  } catch (error) {
+    // Type-safe error handling
+    if (error instanceof ApiError) {
+      console.error(`${error.status}: ${error.message}`);
+    }
+  }
+}
+```
+
+## File Upload Example
+
+Example of handling file uploads with type safety:
+
+```typescript
+// app/api/upload/route.ts
+import { NextApiRequest } from 'next-ts-api';
+
+export async function POST(request: Request) {
+  const formData = await request.formData();
+  const file = formData.get('file') as File;
+  
+  // Handle file upload
+  
+  return Response.json({
+    url: `https://your-cdn.com/files/${file.name}`,
+    size: file.size,
+    type: file.type
+  });
+}
+```
+
+```typescript
+// app/upload/page.tsx
+import { api } from '@/lib/api';
+
+async function handleUpload(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const response = await api('upload', {
+    method: 'POST',
+    body: formData,
+    // Override default JSON content type
+    headers: {}
+  });
+  
+  // Response is fully typed
+  const { url, size, type } = response;
+}
+```
+
+## Next Steps
+
+- Check out the [API Reference](/docs/api-reference) for detailed documentation
+- Learn about [Core Concepts](/docs/core-concepts)
+- See [Contributing](/docs/contributing) guidelines 

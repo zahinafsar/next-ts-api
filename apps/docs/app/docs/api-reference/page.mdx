@@ -1,0 +1,175 @@
+# API Reference
+
+This page provides detailed documentation for Next-TS-API's core APIs and types.
+
+## Core Types
+
+### NextApiRequest
+
+```typescript
+import { NextApiRequest } from 'next-ts-api';
+
+type NextApiRequest<TBody = unknown> = Request & {
+  json(): Promise<TBody>;
+};
+```
+
+The `NextApiRequest` type extends the standard Next.js `Request` type with type-safe body parsing.
+
+### ApiRoutes
+
+```typescript
+type ApiRoutes = {
+  [path: string]: {
+    [method in HttpMethod]?: {
+      body?: unknown;
+      response: unknown;
+      params?: Record<string, string>;
+      query?: Record<string, string>;
+    };
+  };
+};
+```
+
+Generated type that describes your API routes structure.
+
+### HttpMethod
+
+```typescript
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+```
+
+Supported HTTP methods.
+
+## API Client
+
+### createNextFetchApi
+
+```typescript
+function createNextFetchApi<T extends ApiRoutes>(config?: {
+  baseUrl?: string;
+  headers?: HeadersInit;
+}): ApiClient<T>;
+```
+
+Creates a type-safe API client for your routes.
+
+**Parameters:**
+- `config.baseUrl`: Optional base URL for API requests
+- `config.headers`: Optional default headers
+
+**Returns:**
+- A type-safe API client function
+
+**Example:**
+```typescript
+import { createNextFetchApi } from "next-ts-api";
+import { type ApiRoutes } from "../types/next-ts-api";
+
+const api = createNextFetchApi<ApiRoutes>({
+  baseUrl: 'https://api.example.com',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+```
+
+### ApiClient
+
+```typescript
+type ApiClient<T extends ApiRoutes> = <
+  TPath extends keyof T,
+  TMethod extends keyof T[TPath]
+>(
+  path: TPath,
+  options: {
+    method: TMethod;
+    body?: T[TPath][TMethod]['body'];
+    params?: T[TPath][TMethod]['params'];
+    query?: T[TPath][TMethod]['query'];
+    headers?: HeadersInit;
+  }
+) => Promise<T[TPath][TMethod]['response']>;
+```
+
+The type-safe API client function type.
+
+## Configuration
+
+### nextTsApi
+
+```typescript
+import { nextTsApi } from 'next-ts-api/config';
+
+function nextTsApi(options?: {
+  outDir?: string;
+  include?: string[];
+  exclude?: string[];
+}): Plugin;
+```
+
+Next.js plugin for type generation.
+
+**Parameters:**
+- `options.outDir`: Output directory for generated types (default: 'types')
+- `options.include`: Glob patterns for files to include
+- `options.exclude`: Glob patterns for files to exclude
+
+**Example:**
+```javascript
+// next.config.js
+const { nextTsApi } = require('next-ts-api/config');
+
+const nextConfig = {};
+
+const plugins = [
+  nextTsApi({
+    outDir: 'types',
+    include: ['app/api/**/*.ts'],
+    exclude: ['**/*.test.ts']
+  })
+];
+
+module.exports = composePlugins(...plugins)(nextConfig);
+```
+
+## Error Handling
+
+### ApiError
+
+```typescript
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public data?: unknown
+  );
+}
+```
+
+Custom error class for API errors.
+
+**Properties:**
+- `message`: Error message
+- `status`: HTTP status code
+- `data`: Optional error data
+
+**Example:**
+```typescript
+try {
+  const response = await api('users', {
+    method: 'POST',
+    body: { name: 'John' }
+  });
+} catch (error) {
+  if (error instanceof ApiError) {
+    console.error(`${error.status}: ${error.message}`);
+  }
+}
+```
+
+## Next Steps
+
+- See [Examples](/docs/examples) for practical usage
+- Learn about [Core Concepts](/docs/core-concepts)
+- Check out [Contributing](/docs/contributing) guidelines 

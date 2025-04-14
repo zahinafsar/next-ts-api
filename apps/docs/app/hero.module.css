@@ -1,0 +1,170 @@
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #13151a 0%, #1e2128 100%);
+  color: #ffffff;
+}
+
+.hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
+.titleLine {
+  display: block;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.titleLine:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #a1a1aa;
+  margin-bottom: 2.5rem;
+  animation: fadeIn 0.8s ease-out forwards;
+  animation-delay: 0.6s;
+  opacity: 0;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  animation: fadeIn 0.8s ease-out forwards;
+  animation-delay: 0.9s;
+  opacity: 0;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.primary {
+  background: linear-gradient(135deg, #646cff 0%, #4c54e8 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(100, 108, 255, 0.3);
+}
+
+.primary:hover {
+  box-shadow: 0 6px 30px rgba(100, 108, 255, 0.4);
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.decorativeElements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.circle, .square, .triangle {
+  position: absolute;
+  opacity: 0.1;
+}
+
+.circle {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #646cff, #4c54e8);
+  top: 10%;
+  right: 5%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.square {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(45deg, #ff6b6b, #ee5253);
+  bottom: 15%;
+  left: 10%;
+  animation: rotate 20s linear infinite;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-bottom: 173.2px solid rgba(100, 108, 255, 0.2);
+  top: 20%;
+  left: 20%;
+  animation: float 8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+  
+  .subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .decorativeElements {
+    transform: scale(0.7);
+  }
+} 

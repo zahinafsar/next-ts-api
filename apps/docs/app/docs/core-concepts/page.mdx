@@ -1,0 +1,148 @@
+# Core Concepts
+
+Next-TS-API is built around several core concepts that work together to provide end-to-end type safety for your Next.js API routes.
+
+## Type Generation
+
+Next-TS-API automatically generates TypeScript types for your API routes by analyzing your route handlers. This includes:
+
+- Request body types
+- Response payload types
+- URL parameters
+- Query parameters
+
+The generated types are stored in `types/next-ts-api.ts` and are automatically updated when you make changes to your API routes.
+
+## Route Handlers
+
+Route handlers in Next-TS-API are enhanced versions of Next.js route handlers with built-in type safety:
+
+```typescript
+import { NextApiRequest } from 'next-ts-api';
+
+// GET handler with no request body
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  return Response.json({ data: 'Hello' });
+}
+
+// POST handler with typed request body
+export async function POST(
+  request: NextApiRequest<{
+    title: string;
+    completed: boolean;
+  }>
+) {
+  const body = await request.json();
+  return Response.json({ success: true });
+}
+```
+
+## Type-Safe API Client
+
+The API client provides type-safe access to your API routes:
+
+```typescript
+import { createNextFetchApi } from "next-ts-api";
+import { type ApiRoutes } from "../types/next-ts-api";
+
+// Create a type-safe API client
+export const api = createNextFetchApi<ApiRoutes>();
+
+// All API calls are now type-safe
+const response = await api('users', {
+  method: 'POST',
+  body: {
+    name: 'John',  // Type checked!
+    email: 'john@example.com'  // Type checked!
+  }
+});
+```
+
+## Type Inference
+
+Next-TS-API uses TypeScript's type inference capabilities to:
+
+1. **Infer Request Types**: Automatically infers the type of request bodies from your route handlers
+2. **Infer Response Types**: Determines the structure of your API responses
+3. **Infer Parameters**: Captures URL and query parameter types
+
+Example of type inference:
+
+```typescript
+// Route handler
+export async function PUT(
+  request: NextApiRequest<UpdateTodoInput>,
+  { params }: { params: { id: string } }
+) {
+  const body = await request.json();
+  return Response.json({ 
+    success: true,
+    data: { ...body, id: params.id }
+  });
+}
+
+// Client usage - all types are inferred!
+const response = await api('todos/123', {
+  method: 'PUT',
+  body: {
+    title: 'Updated todo',
+    completed: true
+  }
+});
+// response.data is fully typed!
+```
+
+## Error Handling
+
+Next-TS-API provides type-safe error handling:
+
+```typescript
+try {
+  const response = await api('todos', {
+    method: 'POST',
+    body: {
+      title: 'New todo'
+      // TypeScript will catch missing required fields!
+    }
+  });
+} catch (error) {
+  // Error handling with type information
+  if (error instanceof ApiError) {
+    console.error(error.status, error.message);
+  }
+}
+```
+
+## Best Practices
+
+1. **Always Import from next-ts-api**:
+   ```typescript
+   import { NextApiRequest } from 'next-ts-api';
+   // NOT from 'next/types'
+   ```
+
+2. **Use Type Annotations**:
+   ```typescript
+   // Good - explicit types
+   export async function POST(
+     request: NextApiRequest<CreateTodoInput>
+   ) { }
+   
+   // Avoid - implicit any
+   export async function POST(request) { }
+   ```
+
+3. **Leverage Generated Types**:
+   ```typescript
+   import { type ApiRoutes } from "../types/next-ts-api";
+   // Use throughout your application
+   ```
+
+## Next Steps
+
+- Check out the [API Reference](/docs/api-reference) for detailed documentation
+- See [Examples](/docs/examples) for common usage patterns
+- Learn about [Contributing](/docs/contributing) to Next-TS-API 
