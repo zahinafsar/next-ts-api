@@ -20,17 +20,13 @@ pnpm add next-ts-api
 
 ```javascript
 const { nextTsApi } = require('next-ts-api/config');
+const withNextTsApi = nextTsApi();
 
 const nextConfig = {
   // ... your other config
 };
 
-const plugins = [
-  // ... other plugins
-  nextTsApi(),
-];
-
-module.exports = composePlugins(...plugins)(nextConfig);
+export default withNextTsApi(nextConfig);
 ```
 
 2. The plugin will automatically generate types for your API routes in a `types/next-ts-api.ts` file.
@@ -84,8 +80,10 @@ export default async function Page() {
     method: 'POST',
     body: { name: 'John' }
   });
+
+  const data = await response.json();
   
-  return <div>{response.message}</div>;
+  return <div>{data.message}</div>;
 }
 ```
 

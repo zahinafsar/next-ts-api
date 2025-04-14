@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 
 // Simple in-memory storage for todos
-let todos: { id: string; text: string; completed: boolean }[] = [];
+let todos: { id: string; text: string; completed: boolean }[] = [
+  {
+    id: '1',
+    text: "Test",
+    completed: false
+  }
+];
 
 export async function GET() {
   return NextResponse.json(todos);

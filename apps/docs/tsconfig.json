@@ -23,14 +23,9 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "app/page.jdx"  ],
-  "exclude": [
-    "node_modules"
+    "**/*.tsx",
+    "app/page.jdx"
   ],
-  "references": [
-    {
-      "path": "../../libs/next-ts-api"
-    }
-  ]
+  "exclude": ["node_modules"],
+  "references": []
 }

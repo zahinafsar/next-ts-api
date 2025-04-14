@@ -1,45 +1,64 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
+import Logo from '../components/Logo'
 import 'nextra-theme-docs/style.css'
- 
+
 export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  title: 'Next-TS-API - Type-Safe API Development for Next.js',
+  description: 'Build type-safe APIs in Next.js with automatic type generation and runtime validation. Simple, powerful, and developer friendly.',
+  keywords: ['Next.js', 'TypeScript', 'API', 'Type Safety', 'Web Development', 'Frontend', 'Backend'],
+  authors: [{ name: 'Next-TS-API Team' }],
+  openGraph: {
+    title: 'Next-TS-API - Type-Safe API Development for Next.js',
+    description: 'Build type-safe APIs in Next.js with automatic type generation and runtime validation.',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Next-TS-API - Type-Safe API Development for Next.js',
+    description: 'Build type-safe APIs in Next.js with automatic type generation and runtime validation.',
+  },
+  robots: {
+    index: true,
+    follow: true
+  }
 }
- 
-const banner = <Banner storageKey="some-key">Next-TS-API 1.0 is released 🎉</Banner>
+
+const banner = <Banner storageKey="next-ts-api-release">Next-TS-API 1.0 is released 🎉</Banner>
 const navbar = (
   <Navbar
-    logo={<b>Next-TS-API</b>}
-    // ... Your additional navbar options
+    logo={<Logo />}
   />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>
- 
+const footer = <Footer>MIT {new Date().getFullYear()} © Next-TS-API.</Footer>
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      // Not required, but good for SEO
       lang="en"
-      // Required to be set
       dir="ltr"
-      // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
       suppressHydrationWarning
     >
-      <Head
-      // ... Your additional head options
-      >
-        {/* Your additional tags should be passed as `children` of `<Head>` element */}
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="canonical" href="https://next-ts-api.org" />
+        <meta name="theme-color" content="#0070f3" />
       </Head>
       <body>
         <Layout
           banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
+          docsRepositoryBase="https://github.com/zahinafsar/next-ts-api"
           footer={footer}
-          // ... Your additional layout options
+          darkMode={true}
+          nextThemes={{
+            defaultTheme: 'system',
+            storageKey: 'theme'
+          }}
         >
           {children}
         </Layout>

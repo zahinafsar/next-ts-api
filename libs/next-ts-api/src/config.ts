@@ -58,7 +58,7 @@ class NextTsApiPlugin implements WebpackPluginInstance {
   }
 }
 
-type WithRoutesOptions = Pick<NextTsApiOptions, "outDir" | "dir">;
+type WithRoutesOptions = Pick<NextTsApiOptions, "outDir" | "dir" | 'outFile'>;
 
 export const nextTsApi = (
   options?: WithRoutesOptions,

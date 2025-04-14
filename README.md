@@ -35,17 +35,13 @@ pnpm add next-ts-api
 
 ```javascript
 const { nextTsApi } = require('next-ts-api/config');
+const withNextTsApi = nextTsApi();
 
 const nextConfig = {
   // ... your other config
 };
 
-const plugins = [
-  // ... other plugins
-  nextTsApi(),
-];
-
-module.exports = composePlugins(...plugins)(nextConfig);
+export default withNextTsApi(nextConfig);
 ```
 
 2. The plugin will automatically generate types for your API routes in a `types/next-ts-api.ts` file.
@@ -113,7 +109,6 @@ const deleteResponse = await api('test-api', {
 The library automatically generates types for:
 - Request bodies
 - Response payloads
-- URL parameters
 - Query parameters
 
 Example of generated types:

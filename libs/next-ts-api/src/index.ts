@@ -100,7 +100,9 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
  * @template AT - The API routes type
  * @returns A function that can be used to fetch data from API routes
  */
-export const createNextFetchApi = <AT>() => {
+export const createNextFetchApi = <AT>({
+    baseUrl = '/api'
+} = {}) => {
     type PathsWithMethod<M extends HttpMethod> = {
         [K in keyof AT]: M extends keyof AT[K] ? K : never
     }[keyof AT];
@@ -127,14 +129,18 @@ export const createNextFetchApi = <AT>() => {
         : never
         : never;
 
+    type TypedResponse<T> = Omit<Response, 'json'> & {
+        json: () => Promise<T>;
+    };
+
     const fetchApi = async <M extends HttpMethod, P extends PathsWithMethod<M>>(
         path: P,
         options: ApiOptions<M, P>
-    ): Promise<ApiResponse<M, P>> => {
+    ): Promise<TypedResponse<ApiResponse<M, P>>> => {
         const { params, ...fetchOptions } = options;
         const queryParams = params ? `?${new URLSearchParams(params as Record<string, string>)}` : '';
 
-        const response = await fetch(`/${path as string}${queryParams}`, {
+        const response = await fetch(`${baseUrl}/${path as string}${queryParams}`, {
             ...fetchOptions,
             method: options.method,
             headers: {
@@ -143,7 +149,8 @@ export const createNextFetchApi = <AT>() => {
             },
             body: options.body ? JSON.stringify(options.body) : undefined,
         });
-        return response.json();
+
+        return response;
     }
 
     return fetchApi;

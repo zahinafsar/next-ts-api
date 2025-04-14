@@ -8,7 +8,6 @@ Next-TS-API automatically generates TypeScript types for your API routes by anal
 
 - Request body types
 - Response payload types
-- URL parameters
 - Query parameters
 
 The generated types are stored in `types/next-ts-api.ts` and are automatically updated when you make changes to your API routes.
@@ -20,14 +19,6 @@ Route handlers in Next-TS-API are enhanced versions of Next.js route handlers wi
 ```typescript
 import { NextApiRequest } from 'next-ts-api';
 
-// GET handler with no request body
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  return Response.json({ data: 'Hello' });
-}
-
 // POST handler with typed request body
 export async function POST(
   request: NextApiRequest<{
@@ -35,8 +26,8 @@ export async function POST(
     completed: boolean;
   }>
 ) {
-  const body = await request.json();
-  return Response.json({ success: true });
+  const { title, completed } = await request.json();
+  return Response.json({ success: true, data: { title, completed } });
 }
 ```
 
@@ -61,41 +52,7 @@ const response = await api('users', {
 });
 ```
 
-## Type Inference
-
-Next-TS-API uses TypeScript's type inference capabilities to:
-
-1. **Infer Request Types**: Automatically infers the type of request bodies from your route handlers
-2. **Infer Response Types**: Determines the structure of your API responses
-3. **Infer Parameters**: Captures URL and query parameter types
-
-Example of type inference:
-
-```typescript
-// Route handler
-export async function PUT(
-  request: NextApiRequest<UpdateTodoInput>,
-  { params }: { params: { id: string } }
-) {
-  const body = await request.json();
-  return Response.json({ 
-    success: true,
-    data: { ...body, id: params.id }
-  });
-}
-
-// Client usage - all types are inferred!
-const response = await api('todos/123', {
-  method: 'PUT',
-  body: {
-    title: 'Updated todo',
-    completed: true
-  }
-});
-// response.data is fully typed!
-```
-
-## Error Handling
+{/* ## Error Handling
 
 Next-TS-API provides type-safe error handling:
 
@@ -114,7 +71,7 @@ try {
     console.error(error.status, error.message);
   }
 }
-```
+``` */}
 
 ## Best Practices
 

@@ -8,6 +8,9 @@
     },
     {
       "path": "./libs/next-ts-api"
+    },
+    {
+      "path": "./apps/docs"
     }
   ]
 }
