@@ -1,4 +1,5 @@
 import styles from './hero.module.css';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -14,11 +15,11 @@ export default function Home() {
             configuration
           </p>
           <div className={styles.buttonGroup}>
-            <a href="/docs">
+            <Link href="/docs">
               <button className={`${styles.button} ${styles.primary}`}>
                 Get Started
               </button>
-            </a>
+            </Link>
             <a href="https://github.com/zahinafsar/next-ts-api">
               <button className={`${styles.button} ${styles.secondary}`}>
                 View on GitHub

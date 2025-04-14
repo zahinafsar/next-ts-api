@@ -7,5 +7,7 @@ const withNextra = nextra({
 // You can include other Next.js configuration options here, in addition to Nextra settings:
 export default withNextra({
   output: "export",
+  assetPrefix: '.',
+  basePath: '/next-ts-api',
   // ... Other Next.js config options
 })
