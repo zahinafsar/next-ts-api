@@ -66,7 +66,6 @@ type ApiClient<T extends ApiRoutes> = <
     method: TMethod;
     body?: T[TPath][TMethod]['body'];
     params?: T[TPath][TMethod]['params'];
-    query?: T[TPath][TMethod]['query'];
     headers?: HeadersInit;
   }
 ) => Promise<T[TPath][TMethod]['response']>;
@@ -99,7 +98,9 @@ Next.js plugin for type generation.
 ```javascript
 // next.config.js
 const { nextTsApi } = require('next-ts-api/config');
-const withNextTsApi = nextTsApi();
+const withNextTsApi = nextTsApi({
+  outDir: 'src/types',
+});
 
 const nextConfig = {
   // ... your other config

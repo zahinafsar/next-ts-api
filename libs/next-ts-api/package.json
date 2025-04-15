@@ -1,6 +1,29 @@
 {
   "name": "next-ts-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zahinafsar/next-ts-api",
+    "directory": "packages/next-ts-api"
+  },
+  "homepage": "https://zahinafsar.github.io/next-ts-api",
+  "keywords": [
+    "next-ts-api",
+    "nextjs",
+    "typescript",
+    "api-routes",
+    "rest-api",
+    "server-actions",
+    "api-client",
+    "type-safe",
+    "http-client",
+    "next-api"
+  ],
+  "description": "A powerful TypeScript-first API client generator for Next.js applications with full type safety and automatic api type generation.",
+  "author": {
+    "name": "Zahin Afsar",
+    "email": "afsarzahin@gmail.com"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -12,17 +12,12 @@ We welcome contributions to Next-TS-API! This guide will help you get started wi
 
 2. Install dependencies:
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. Build the project:
    ```bash
-   pnpm build
-   ```
-
-4. Run tests:
-   ```bash
-   pnpm test
+   nx run next-ts-api:build
    ```
 
 ## Development Workflow
@@ -57,7 +52,7 @@ We welcome contributions to Next-TS-API! This guide will help you get started wi
 When making changes, please update:
 - TypeScript types and JSDoc comments
 - README.md for significant changes
-- Documentation pages in `/docs`
+- Documentation pages in `apps/docs`
 - Example code if relevant
 
 ## Type Safety
@@ -68,21 +63,6 @@ Next-TS-API prioritizes type safety. When contributing:
 2. Avoid using `any` or `@ts-ignore`
 3. Write proper type definitions
 4. Test type inference and validation
-
-## Code Style
-
-We use ESLint and Prettier for code formatting:
-
-```bash
-pnpm lint        # Run linter
-pnpm format      # Format code
-```
-
-Follow these guidelines:
-- Use meaningful variable and function names
-- Write clear comments for complex logic
-- Keep functions focused and concise
-- Use TypeScript features appropriately
 
 ## Pull Request Guidelines
 

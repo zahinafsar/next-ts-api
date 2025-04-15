@@ -1,0 +1,9 @@
+/.vscode
+/src
+/node_modules
+.gitignore
+.npmignore
+*.js
+*.txt
+*.scss
+package-lock.json

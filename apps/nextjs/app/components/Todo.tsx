@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
+import { api } from '../../lib/api';
 interface Todo {
   id: string;
   text: string;
@@ -17,7 +17,7 @@ export default function Todo() {
   }, []);
 
   const fetchTodos = async () => {
-    const response = await fetch('/api/todo');
+    const response = await api('todo', { method: 'GET' });
     const data = await response.json();
     setTodos(data);
   };
@@ -26,12 +26,9 @@ export default function Todo() {
     e.preventDefault();
     if (!newTodo.trim()) return;
 
-    const response = await fetch('/api/todo', {
+    const response = await api('todo', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text: newTodo }),
+      body: { text: newTodo },
     });
     const data = await response.json();
     setTodos([...todos, data]);
@@ -39,20 +36,18 @@ export default function Todo() {
   };
 
   const toggleTodo = async (todo: Todo) => {
-    const response = await fetch('/api/todo', {
+    const response = await api('todo', {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...todo, completed: !todo.completed }),
+      body: { ...todo, completed: !todo.completed },
     });
     const updatedTodo = await response.json();
     setTodos(todos.map((t) => (t.id === updatedTodo.id ? updatedTodo : t)));
   };
 
   const deleteTodo = async (id: string) => {
-    await fetch(`/api/todo?id=${id}`, {
+    await api('todo', {
       method: 'DELETE',
+      params: { id },
     });
     setTodos(todos.filter((todo) => todo.id !== id));
   };

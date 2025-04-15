@@ -43,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="./favicon.ico" />
         <link rel="canonical" href="https://next-ts-api.org" />
         <meta name="theme-color" content="#0070f3" />
       </Head>
@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/zahinafsar/next-ts-api"
+          docsRepositoryBase="https://github.com/zahinafsar/next-ts-api/tree/main/apps/docs"
           footer={footer}
           darkMode={true}
           nextThemes={{

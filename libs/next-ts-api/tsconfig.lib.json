@@ -10,7 +10,9 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node"],
+    "sourceMap": false,
+    "declarationMap": false
   },
   "include": ["src/**/*.ts"],
   "references": []

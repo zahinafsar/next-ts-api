@@ -1,6 +1,5 @@
 import { ExtractNextBody, ExtractNextParams, ExtractNextResponse } from 'next-ts-api';
 import { GET as GET_1 } from '../app/api/hello/route';
-import { PUT as PUT_2, DELETE as DELETE_2 } from '../app/api/test-api/route';
 import { GET as GET_3, POST as POST_3, PUT as PUT_3, DELETE as DELETE_3 } from '../app/api/todo/route';
 
 export type ApiRoutes = {
@@ -8,17 +7,6 @@ export type ApiRoutes = {
     GET: {
       response: ExtractNextResponse<typeof GET_1>
       params: ExtractNextParams<typeof GET_1>
-    },
-  };
-  'test-api': {
-    PUT: {
-      body: ExtractNextBody<typeof PUT_2>
-      response: ExtractNextResponse<typeof PUT_2>
-      params: ExtractNextParams<typeof PUT_2>
-    },
-    DELETE: {
-      response: ExtractNextResponse<typeof DELETE_2>
-      params: ExtractNextParams<typeof DELETE_2>
     },
   };
   'todo': {
