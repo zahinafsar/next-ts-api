@@ -11,11 +11,28 @@ A complete example of a Todo List API with type-safe endpoints:
 ```typescript
 // app/api/todos/route.ts
 import { NextApiRequest } from 'next-ts-api';
+import { NextResponse } from 'next/server';
 
 interface Todo {
   id: string;
   title: string;
   completed: boolean;
+}
+
+const todos: Todo[] = [];
+
+// GET /api/todos
+export async function GET(
+  request: NextApiRequest<null, {
+    completed?: string;
+  }>
+) {
+  const searchParams = request.nextUrl.searchParams;
+  const completed = searchParams.get('completed');
+
+  return NextResponse.json(
+    todos.filter(todo => todo.completed === (completed === 'true'))
+  );
 }
 
 // POST /api/todos
@@ -30,13 +47,8 @@ export async function POST(
     title,
     completed: false
   };
-  return Response.json(newTodo);
+  return NextResponse.json(newTodo);
 }
-```
-
-```typescript
-// app/api/todos/route.ts
-import { NextApiRequest } from 'next-ts-api';
 
 // PUT /api/todos
 export async function PUT(
@@ -47,11 +59,22 @@ export async function PUT(
   }>
 ) {
   const updates = await request.json();
-  return Response.json({ 
+  // Example response - in real app, update in database
+  return NextResponse.json({ 
     id: updates.id,
     title: updates.title,
     completed: updates.completed
   });
+}
+
+// DELETE /api/todos/[id]
+export async function DELETE(
+  request: NextApiRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  // Example response - in real app, delete from database
+  return NextResponse.json({ success: true, deletedId: id });
 }
 ```
 
@@ -67,24 +90,64 @@ export const api = createNextFetchApi<ApiRoutes>();
 
 ```typescript
 // app/todos/page.tsx
+'use client';
+
 import { api } from '@/lib/api';
+import { useState, useEffect } from 'react';
 
-export default async function TodosPage() {
-  // Update a todo
-  const updateTodo = async () => {
-    const updatedTodo = await api('todos', {
-      method: 'PUT',
-      body: { 
-        id: '123',
-        title: 'Learn Next-TS-API',
-        completed: true
-      }
+interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+export default function TodosPage() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  // Fetch completed todos
+  const fetchTodos = async () => {
+    const response = await api('todos', {
+      method: 'GET',
+      query: { completed: 'true' }
     });
-    const data = await updatedTodo.json();
-    console.log(data);
-  }
+    const data = await response.json();
+    setTodos(data);
+  };
 
-  return <div>/* Your JSX here */</div>;
+  // Create a new todo
+  const createTodo = async (title: string) => {
+    const response = await api('todos', {
+      method: 'POST',
+      body: { title }
+    });
+    const newTodo = await response.json();
+    setTodos([...todos, newTodo]);
+  };
+
+  // Update a todo
+  const updateTodo = async (todo: Todo) => {
+    const response = await api('todos', {
+      method: 'PUT',
+      body: todo
+    });
+    const updatedTodo = await response.json();
+    setTodos(todos.map(t => t.id === updatedTodo.id ? updatedTodo : t));
+  };
+
+  // Delete a todo
+  const deleteTodo = async (id: string) => {
+    await api(`todos/[id]`, {
+      method: 'DELETE',
+      params: { id }
+    });
+    setTodos(todos.filter(t => t.id !== id));
+  };
+
+  return (
+    <div>
+      {/* Your JSX implementation here */}
+    </div>
+  );
 }
 ```
 

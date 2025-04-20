@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "./lib/logger";
 
 /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams) */
 interface URLSearchParamsType<T = unknown> {
@@ -9,37 +10,37 @@ interface URLSearchParamsType<T = unknown> {
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/append)
      */
-    append(name: keyof T, value: string): void;
+    append(name: keyof T, value: T[keyof T] extends string ? T[keyof T] : string): void;
     /**
      * Deletes the given search parameter, and its associated value, from the list of all search parameters.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/delete)
      */
-    delete(name: keyof T, value?: string): void;
+    delete(name: keyof T, value?: T[keyof T] extends string ? T[keyof T] : string): void;
     /**
      * Returns the first value associated to the given search parameter.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/get)
      */
-    get(name: keyof T): string | null;
+    get(name: keyof T): T[keyof T] | null;
     /**
      * Returns all the values association with a given search parameter.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/getAll)
      */
-    getAll(name: keyof T): string[];
+    getAll(name: keyof T): Array<T[keyof T] extends string ? T[keyof T] : string>;
     /**
      * Returns a Boolean indicating if such a search parameter exists.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/has)
      */
-    has(name: keyof T, value?: string): boolean;
+    has(name: keyof T, value?: T[keyof T] extends string ? T[keyof T] : string): boolean;
     /**
      * Sets the value associated to a given search parameter to the given value. If there were several values, delete the others.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/set)
      */
-    set(name: keyof T, value: string): void;
+    set(name: keyof T, value: T[keyof T] extends string ? T[keyof T] : string): void;
     /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/sort) */
     sort(): void;
     /** Returns a string containing a query string suitable for use in a URL. Does not include the question mark. */
@@ -49,7 +50,7 @@ interface URLSearchParamsType<T = unknown> {
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/forEach)
      */
-    forEach(callbackfn: (value: string, key: keyof T, parent: URLSearchParamsType<T>) => void, thisArg?: any): void;
+    forEach(callbackfn: (value: T[keyof T] extends string ? T[keyof T] : string, key: keyof T, parent: URLSearchParamsType<T>) => void, thisArg?: any): void;
 }
 
 
@@ -78,8 +79,15 @@ export type ExtractNextBody<T> =
  * Extracts the URL search params type from a Next.js API route handler
  * @template T - The API route handler function type
  */
-export type ExtractNextParams<T> =
+export type ExtractNextQuery<T> =
     T extends (req: NextApiRequest<any, infer P>, ...args: any) => any ? P : never;
+
+/**
+ * Extracts the URL params type from a Next.js API route handler
+ * @template T - The API route handler function type
+ */
+export type ExtractNextParams<T> =
+    T extends (req: any, ctx: { params: infer P }) => any ? P : never;
 
 /**
  * Extracts the response type from a Next.js API route handler, excluding error responses
@@ -109,9 +117,14 @@ export const createNextFetchApi = <AT>({
 
     type ApiOptions<M extends HttpMethod, P extends PathsWithMethod<M>> = {
         method: M;
+        query?: M extends keyof AT[P]
+        ? 'query' extends keyof AT[P][M]
+        ? AT[P][M]['query']
+        : never
+        : never;
         params?: M extends keyof AT[P]
         ? 'params' extends keyof AT[P][M]
-        ? AT[P][M]['params']
+        ? Awaited<AT[P][M]['params']>
         : never
         : never;
         body?: M extends Exclude<HttpMethod, 'GET'>
@@ -137,16 +150,23 @@ export const createNextFetchApi = <AT>({
         path: P,
         options: ApiOptions<M, P>
     ): Promise<TypedResponse<ApiResponse<M, P>>> => {
-        const { params, ...fetchOptions } = options;
-        const queryParams = params ? `?${new URLSearchParams(params as Record<string, string>)}` : '';
+        let pathString = path as string;
+        const { query, params, ...fetchOptions } = options;
+        const queryParams = query ? `?${new URLSearchParams(query as Record<string, string>)}` : '';
 
-        const response = await fetch(`${baseUrl}/${path as string}${queryParams}`, {
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                pathString = pathString.replace(`[${key}]`, value as string);
+            });
+
+            const missingParams = pathString.match(/\[([^\]]+)\]/g)?.map(param => param.slice(1, -1));
+            if (missingParams) logger.error(`Missing required params for ${pathString}`);
+        }
+
+        const response = await fetch(`${baseUrl}/${pathString}${queryParams}`, {
             ...fetchOptions,
             method: options.method,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
+            headers: options.headers,
             body: options.body ? JSON.stringify(options.body) : undefined,
         });
 

@@ -8,7 +8,6 @@
   "private": true,
   "dependencies": {
     "next": "~15.2.4",
-    "next-ts-api": "^0.0.1",
     "nextra": "^4.2.17",
     "nextra-theme-docs": "^4.2.17",
     "react": "^19.0.0",

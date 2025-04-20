@@ -82,7 +82,7 @@ export function findRouteFiles(dir: string, routes: RouteInfo[] = [], basePath: 
 }
 
 export function generateTypeDefinitions(routes: RouteInfo[], options: Required<NextTsApiOptions>): string {
-    let imports = 'import { ExtractNextBody, ExtractNextParams, ExtractNextResponse } from \'next-ts-api\';\n';
+    let imports = 'import { ExtractNextBody, ExtractNextQuery, ExtractNextResponse, ExtractNextParams } from \'next-ts-api\';\n';
     let importCounter = 1;
     const importMap = new Map<string, { counter: number; methods: Set<string> }>();
 
@@ -118,10 +118,11 @@ export function generateTypeDefinitions(routes: RouteInfo[], options: Required<N
             const counter = importMap.get(importPath)!.counter;
 
             typeDefinition += `    ${method}: {\n`;
-            if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+            if (!['GET', 'DELETE'].includes(method)) {
                 typeDefinition += `      body: ExtractNextBody<typeof ${method}_${counter}>\n`;
             }
             typeDefinition += `      response: ExtractNextResponse<typeof ${method}_${counter}>\n`;
+            typeDefinition += `      query: ExtractNextQuery<typeof ${method}_${counter}>\n`;
             typeDefinition += `      params: ExtractNextParams<typeof ${method}_${counter}>\n`;
             typeDefinition += `    },\n`;
         });
@@ -134,15 +135,15 @@ export function generateTypeDefinitions(routes: RouteInfo[], options: Required<N
     return imports + typeDefinition;
 }
 
-export function writeNextTsApi(options: NextTsApiOptions): void {
+export function writeNextTsApi(options?: NextTsApiOptions): void {
     const PROJECT_ROOT = process.cwd();
     const API_DIR = path.join(getAppDirectory(), 'api');
     const TYPES_DIR = path.join(PROJECT_ROOT, 'types');
 
     const defaultOptions = {
-        dir: options.dir ?? API_DIR,
-        outDir: options.outDir ?? TYPES_DIR,
-        outFile: options.outFile ?? "next-ts-api.ts",
+        dir: options?.dir ?? API_DIR,
+        outDir: options?.outDir ?? TYPES_DIR,
+        outFile: options?.outFile ?? "next-ts-api.ts",
     };
 
     const opts = {
@@ -155,7 +156,7 @@ export function writeNextTsApi(options: NextTsApiOptions): void {
     }
 
     try {
-        const routes = findRouteFiles(API_DIR);
+        const routes = findRouteFiles(API_DIR);                                                                                                      
         const typeDefinitions = generateTypeDefinitions(routes, opts);
         const outputFilepath = join(opts.outDir, opts.outFile);
         fs.writeFileSync(outputFilepath, typeDefinitions);

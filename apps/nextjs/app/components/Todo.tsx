@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
-interface Todo {
-  id: string;
-  text: string;
-  completed: boolean;
-}
+import { ApiRoutes } from '../../types/next-ts-api';
+
+type Todo = ApiRoutes['todo']['GET']['response'][number];
 
 export default function Todo() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -14,12 +12,43 @@ export default function Todo() {
 
   useEffect(() => {
     fetchTodos();
+    fetchSingle();
+    fetchSingleWithType();
   }, []);
 
   const fetchTodos = async () => {
     const response = await api('todo', { method: 'GET' });
     const data = await response.json();
     setTodos(data);
+  };
+
+  const fetchSingle = async () => {
+    const response = await api(`todo/[id]/create`, {
+      method: 'GET',
+      params: {
+        id: 'xxr-x34r-x23-x-ef3',
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+  };
+
+  const fetchSingleWithType = async () => {
+    const response = await api(`todo/[id]/create/[type]`, {
+      method: 'POST',
+      params: {
+        id: 'xxr-x34r-x23-x-ef3',
+        type: 'content-type',
+      },
+      query: {
+        content: 'hello-content',
+      },
+      body: {
+        text: 'hello-body',
+      },
+    });
+    const data = await response.json();
+    console.log(data);
   };
 
   const addTodo = async (e: React.FormEvent) => {
@@ -55,7 +84,7 @@ export default function Todo() {
   return (
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Todo App</h1>
-      
+
       <form onSubmit={addTodo} className="mb-6">
         <div className="flex gap-2">
           <input
@@ -87,7 +116,11 @@ export default function Todo() {
                 onChange={() => toggleTodo(todo)}
                 className="w-5 h-5 rounded border-gray-300 focus:ring-blue-500"
               />
-              <span className={`${todo.completed ? 'line-through text-gray-500' : ''}`}>
+              <span
+                className={`${
+                  todo.completed ? 'line-through text-gray-500' : ''
+                }`}
+              >
                 {todo.text}
               </span>
             </div>
@@ -102,4 +135,4 @@ export default function Todo() {
       </ul>
     </div>
   );
-} 
+}

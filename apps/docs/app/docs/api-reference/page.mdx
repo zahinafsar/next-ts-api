@@ -66,6 +66,7 @@ type ApiClient<T extends ApiRoutes> = <
     method: TMethod;
     body?: T[TPath][TMethod]['body'];
     params?: T[TPath][TMethod]['params'];
+    query?: T[TPath][TMethod]['query'];
     headers?: HeadersInit;
   }
 ) => Promise<T[TPath][TMethod]['response']>;
