@@ -1,4 +1,4 @@
-import { ExtractNextBody, ExtractNextQuery, ExtractNextResponse, ExtractNextParams } from 'next-ts-api';
+import type { ExtractNextBody, ExtractNextQuery, ExtractNextResponse, ExtractNextParams } from 'next-ts-api';
 import { GET as GET_1 } from '../app/api/hello/route';
 import { POST as POST_2, GET as GET_2 } from '../app/api/todo/[id]/create/[type]/route';
 import { POST as POST_3, GET as GET_3 } from '../app/api/todo/[id]/create/route';

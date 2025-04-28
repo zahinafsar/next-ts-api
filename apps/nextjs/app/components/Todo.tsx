@@ -42,6 +42,7 @@ export default function Todo() {
       },
       query: {
         content: 'hello-content',
+        isCreate: true,
       },
       body: {
         text: 'hello-body',

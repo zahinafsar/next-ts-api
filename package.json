@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "deploy": "cp README.md ./libs/next-ts-api && cd ./libs/next-ts-api && npm publish"
+    "share-resource": "cp README.md LICENSE ./libs/next-ts-api",
+    "deploy": "npm run share-resource && cd ./libs/next-ts-api && npm publish"
   },
   "private": true,
   "dependencies": {

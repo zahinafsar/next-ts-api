@@ -82,7 +82,7 @@ export function findRouteFiles(dir: string, routes: RouteInfo[] = [], basePath: 
 }
 
 export function generateTypeDefinitions(routes: RouteInfo[], options: Required<NextTsApiOptions>): string {
-    let imports = 'import { ExtractNextBody, ExtractNextQuery, ExtractNextResponse, ExtractNextParams } from \'next-ts-api\';\n';
+    let imports = 'import type { ExtractNextBody, ExtractNextQuery, ExtractNextResponse, ExtractNextParams } from \'next-ts-api\';\n';
     let importCounter = 1;
     const importMap = new Map<string, { counter: number; methods: Set<string> }>();
 

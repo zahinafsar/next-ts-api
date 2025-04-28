@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 import { logger } from "./lib/logger";
 
 /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams) */
@@ -10,37 +10,37 @@ interface URLSearchParamsType<T = unknown> {
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/append)
      */
-    append(name: keyof T, value: T[keyof T] extends string ? T[keyof T] : string): void;
+    append(name: keyof T, value: string): void;
     /**
      * Deletes the given search parameter, and its associated value, from the list of all search parameters.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/delete)
      */
-    delete(name: keyof T, value?: T[keyof T] extends string ? T[keyof T] : string): void;
+    delete(name: keyof T, value?: string): void;
     /**
      * Returns the first value associated to the given search parameter.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/get)
      */
-    get(name: keyof T): T[keyof T] | null;
+    get(name: keyof T): string | null;
     /**
      * Returns all the values association with a given search parameter.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/getAll)
      */
-    getAll(name: keyof T): Array<T[keyof T] extends string ? T[keyof T] : string>;
+    getAll(name: keyof T): string[];
     /**
      * Returns a Boolean indicating if such a search parameter exists.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/has)
      */
-    has(name: keyof T, value?: T[keyof T] extends string ? T[keyof T] : string): boolean;
+    has(name: keyof T, value?: string): boolean;
     /**
      * Sets the value associated to a given search parameter to the given value. If there were several values, delete the others.
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/set)
      */
-    set(name: keyof T, value: T[keyof T] extends string ? T[keyof T] : string): void;
+    set(name: keyof T, value: string): void;
     /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/sort) */
     sort(): void;
     /** Returns a string containing a query string suitable for use in a URL. Does not include the question mark. */
@@ -50,7 +50,7 @@ interface URLSearchParamsType<T = unknown> {
      *
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/forEach)
      */
-    forEach(callbackfn: (value: T[keyof T] extends string ? T[keyof T] : string, key: keyof T, parent: URLSearchParamsType<T>) => void, thisArg?: any): void;
+    forEach(callbackfn: (value: string, key: keyof T, parent: URLSearchParamsType<T>) => void, thisArg?: any): void;
 }
 
 
@@ -152,7 +152,12 @@ export const createNextFetchApi = <AT>({
     ): Promise<TypedResponse<ApiResponse<M, P>>> => {
         let pathString = path as string;
         const { query, params, ...fetchOptions } = options;
-        const queryParams = query ? `?${new URLSearchParams(query as Record<string, string>)}` : '';
+
+        const definedQuery = query ? Object.fromEntries(
+            Object.entries(query).filter(([_, value]) => value !== undefined)
+        ) : {};
+
+        const queryParams = query ? `?${new URLSearchParams(definedQuery as Record<string, string>)}` : '';
 
         if (params) {
             Object.entries(params).forEach(([key, value]) => {
