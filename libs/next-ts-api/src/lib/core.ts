@@ -103,7 +103,7 @@ export function generateTypeDefinitions(routes: RouteInfo[], options: Required<N
         const methods = Array.from(value.methods)
             .map(method => `${method} as ${method}_${value.counter}`)
             .join(', ');
-        imports += `import { ${methods} } from '${importPath}';\n`;
+        imports += `import type { ${methods} } from '${importPath}';\n`;
     });
 
     // Generate type definition

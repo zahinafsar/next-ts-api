@@ -75,18 +75,6 @@ import { type ApiRoutes } from "../types/next-ts-api";
 export const api = createNextFetchApi<ApiRoutes>();
 ```
 
-> [!NOTE]
->
-> If you are using `Turbopack` and getting an error like `Can't resolve 'next-ts-api'`.
-> Please consider updating your tsconfig.
-> ```json
-> {
->   "paths": {
->     "next-ts-api": ["./node_modules/next-ts-api"]
->   }
-> }
-> ```
-
 ### 3. Make API Calls
 
 Use the typed API client in your components:
