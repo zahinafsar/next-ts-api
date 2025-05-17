@@ -1,9 +1,9 @@
 import type { ExtractNextBody, ExtractNextQuery, ExtractNextResponse, ExtractNextParams } from 'next-ts-api';
-import { GET as GET_1 } from '../app/api/hello/route';
-import { POST as POST_2, GET as GET_2 } from '../app/api/todo/[id]/create/[type]/route';
-import { POST as POST_3, GET as GET_3 } from '../app/api/todo/[id]/create/route';
-import { GET as GET_4, POST as POST_4 } from '../app/api/todo/[id]/route';
-import { GET as GET_5, POST as POST_5, PUT as PUT_5, DELETE as DELETE_5 } from '../app/api/todo/route';
+import type { GET as GET_1, POST as POST_1 } from '../app/api/hello/route';
+import type { POST as POST_2, GET as GET_2 } from '../app/api/todo/[id]/create/[type]/route';
+import type { POST as POST_3, GET as GET_3 } from '../app/api/todo/[id]/create/route';
+import type { GET as GET_4, POST as POST_4 } from '../app/api/todo/[id]/route';
+import type { GET as GET_5, POST as POST_5, PUT as PUT_5, DELETE as DELETE_5 } from '../app/api/todo/route';
 
 export type ApiRoutes = {
   'hello': {
@@ -11,6 +11,12 @@ export type ApiRoutes = {
       response: ExtractNextResponse<typeof GET_1>
       query: ExtractNextQuery<typeof GET_1>
       params: ExtractNextParams<typeof GET_1>
+    },
+    POST: {
+      body: ExtractNextBody<typeof POST_1>
+      response: ExtractNextResponse<typeof POST_1>
+      query: ExtractNextQuery<typeof POST_1>
+      params: ExtractNextParams<typeof POST_1>
     },
   };
   'todo/[id]/create/[type]': {

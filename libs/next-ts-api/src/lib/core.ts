@@ -56,9 +56,9 @@ export function findRouteFiles(dir: string, routes: RouteInfo[] = [], basePath: 
         } else if (entry.name === 'route.ts') {
             const fileContent = fs.readFileSync(fullPath, 'utf-8');
             const methods: { [key: string]: { importPath: string; exportName: string } } = {};
-
-            // Simple regex to find exported HTTP method handlers
-            const exportRegex = /export\s+(?:async\s+)?function\s+(GET|POST|PUT|DELETE|PATCH)/g;
+            
+            // Regex to find exported HTTP method handlers (both function and const)
+            const exportRegex = /export\s+(?:(?:async\s+)?function|const)\s+(GET|POST|PUT|DELETE|PATCH)/g;
             let match;
 
             while ((match = exportRegex.exec(fileContent)) !== null) {
